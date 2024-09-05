@@ -1,12 +1,15 @@
 <script lang="ts" setup>
 import { useQuery } from "@tanstack/vue-query";
-import { getSales, type GetSalesResponse } from "~/api";
-import { getSalesOptions } from "~/api/@tanstack/vue-query.gen";
+import { getUserSalesOptions } from "~/api/@tanstack/vue-query.gen";
 
 const { userId } = storeToRefs(useUserStore());
 
-const { data: sales }: GetSalesResponse = useQuery(
-  computed(() => getSalesOptions({ path: { userId: userId.value } }))
+console.log(userId.value);
+
+const { data: sales } = useQuery(
+  computed(() =>
+    getUserSalesOptions({ path: { user_id: "66d8688aeb43a1506c21d98c" } })
+  )
 );
 </script>
 <template>

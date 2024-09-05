@@ -29,11 +29,11 @@ function createNewUser(username: string, password: string) {
   return createUser({ body: { username, password } });
 }
 
-function onSubmit(values) {
+async function onSubmit(values) {
   console.log("Form submitted!", values);
   store.username = values.username;
 
-  const authorized = login({
+  const authorized = await login({
     body: { username: values.username, password: values.password },
   });
 
