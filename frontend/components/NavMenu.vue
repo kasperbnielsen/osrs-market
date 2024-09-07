@@ -12,15 +12,26 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { createUser, login, type GetUserResponse } from "~/api";
-import { useQuery } from "@tanstack/vue-query";
-import type { StringMappingType } from "typescript";
+import type { GenericObject } from "vee-validate";
+import { toast } from "./ui/toast/use-toast";
 
 const isOpen = ref(false);
-const store = useUserStore();
+const isSignUp = ref(false);
+const { username } = storeToRefs(useUserStore());
 
 const formSchema = toTypedSchema(
   z.object({
-    username: z.string().min(2).max(50),
+    username: z.string().email({ message: "Ugyldig email addresse" }),
+    password: z
+      .string()
+      .min(7, { message: "Adgangskode skal være på mindst 7 karakterer" }),
+  })
+);
+
+const formSchema2 = toTypedSchema(
+  z.object({
+    username: z.string(),
+    email: z.string().email({ message: "Ugyldig email addresse" }),
     password: z.string().min(7),
   })
 );
@@ -29,17 +40,35 @@ function createNewUser(username: string, password: string) {
   return createUser({ body: { username, password } });
 }
 
-function onSubmit(values) {
+async function onSignUp(values: GenericObject) {
+  if (values.password == values.rePassword) {
+    await createNewUser(values.username, values.password);
+    isSignUp.value = false;
+  } else {
+    toast({
+      variant: "default",
+      title: "Mismatch",
+      description: "Passwords doesnt match",
+    });
+  }
+}
+
+async function onSubmit(values: GenericObject) {
   console.log("Form submitted!", values);
-  store.username = values.username;
-
-  const authorized = login({
-    body: { username: values.username, password: values.password },
-  });
-
-  console.log(authorized);
-
-  //isOpen.value = false;
+  try {
+    await login({
+      body: { username: values.username, password: values.password },
+    });
+    username.value = values.username;
+    isOpen.value = false;
+  } catch {
+    toast({
+      variant: "destructive",
+      title: "Unauthorized",
+      description: "Wrong email/password, try again",
+    });
+    isOpen.value = true;
+  }
 }
 </script>
 <template>
@@ -58,7 +87,7 @@ function onSubmit(values) {
       >
       <NuxtLink to="/sell"><p class="hover:text-zinc-800">Sælg</p></NuxtLink>
     </div>
-    <div v-if="store.username == ''" class="absolute right-12">
+    <div v-if="username == ''" class="absolute right-12">
       <Dialog v-model:open="isOpen">
         <DialogTrigger> Login </DialogTrigger>
         <DialogContent>
@@ -69,9 +98,9 @@ function onSubmit(values) {
                 <div class="flex flex-col gap-8">
                   <FormField v-slot="{ componentField }" name="username">
                     <FormItem>
-                      <FormLabel>Username</FormLabel>
+                      <FormLabel>Email</FormLabel>
                       <FormControl>
-                        <Input type="text" v-bind="componentField" />
+                        <Input type="email" v-bind="componentField" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -90,28 +119,66 @@ function onSubmit(values) {
                     type="submit"
                     variant="outline"
                   >
-                    Submit</Button
+                    Sign in</Button
                   >
                 </div>
+                <div class="flex gap-4 absolute bottom-8">
+                  <p>Don't have an account yet?</p>
+                  <button
+                    class="font-semi-bold"
+                    type="button"
+                    @click="
+                      () => {
+                        isOpen = false;
+                        isSignUp = true;
+                      }
+                    "
+                  >
+                    Sign up
+                  </button>
+                </div>
               </Form>
-              <Button
-                @click="
-                  () => {
-                    createUser({
-                      body: { username: 'huez', password: '1234567' },
-                    });
-                  }
-                "
-              >
-                Sign up</Button
-              >
             </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
+      <Dialog v-model:open="isSignUp">
+        <DialogContent>
+          <DialogHeader class="flex flex-col gap-8">
+            <DialogTitle>Sign up</DialogTitle>
+            <Form
+              :validation-schema="formSchema2"
+              @submit="onSignUp"
+              class="flex flex-col gap-8"
+            >
+              <FormField v-slot="{ componentField }" name="username"
+                ><FormItem>
+                  <FormLabel>Brugernavn</FormLabel>
+                  <Input type="text" v-bind="componentField" />
+                </FormItem>
+                <FormMessage
+              /></FormField>
+              <FormField v-slot="{ componentField }" name="email"
+                ><FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <Input type="email" v-bind="componentField" />
+                  <FormMessage /> </FormItem
+              ></FormField>
+              <FormField v-slot="{ componentField }" name="password"
+                ><FormItem
+                  ><FormLabel>Password</FormLabel>
+                  <Input type="password" v-bind="componentField" /> </FormItem
+              ></FormField>
+              <Button type="submit" variant="outline" class="w-fit self-center"
+                >Sign up
+              </Button>
+            </Form>
           </DialogHeader>
         </DialogContent>
       </Dialog>
     </div>
     <div v-else class="absolute right-12">
-      <NuxtLink to="/dash">{{ store.username }}</NuxtLink>
+      <NuxtLink to="/dash">{{ username }}</NuxtLink>
     </div>
   </div>
 </template>
