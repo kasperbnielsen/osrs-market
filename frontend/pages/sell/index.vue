@@ -13,12 +13,6 @@ async function newSale(sale: SaleEntity) {
 }
 </script>
 <template>
-  <div>
-    <Button
-      @click="
-        () => newSale({ userId: 'asd', type: 'Gold', buyer: 'asd', price: 100 })
-      "
-      >Test sale</Button
-    >
-  </div>
+
+  <div></div>
 </template>
