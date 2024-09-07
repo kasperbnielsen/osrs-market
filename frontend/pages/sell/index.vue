@@ -13,7 +13,5 @@ function newSale(sale: SaleEntity) {
 }
 </script>
 <template>
-  <div>
-    <Button @click="() => newSale({userId: "", type: 'Gold', buyer: '', price: 100})">Test sale</Button>
-  </div>
+  <div></div>
 </template>
