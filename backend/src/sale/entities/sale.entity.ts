@@ -11,7 +11,7 @@ export class SaleEntityBuyer {
 export class SaleEntity {
   userId: ObjectId;
   type: SaleType;
-  buyer: SaleEntityBuyer;
+  buyer: ObjectId;
   date: Date;
   price: number;
 }

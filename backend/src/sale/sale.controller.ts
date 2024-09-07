@@ -1,7 +1,8 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { SaleService } from './sale.service';
 import { ApiTags } from '@nestjs/swagger';
-import { SaleEntity } from './entities/sale.entity';
+import { CreateSaleInput } from './dto/create-sale.input';
+import { ObjectId } from 'mongodb';
 
 @Controller('sales')
 @ApiTags('Sales')
@@ -9,11 +10,10 @@ export class SaleController {
   constructor(private readonly saleService: SaleService) {}
 
   @Post('')
-  createSale(@Body() sale: SaleEntity) {
+  createSale(@Body() sale: CreateSaleInput) {
     return this.saleService.createSale(
-      sale.userId,
-      sale.type,
-      sale.buyer,
+      sale.itemType,
+      ObjectId.createFromHexString(sale.buyer),
       sale.price,
     );
   }

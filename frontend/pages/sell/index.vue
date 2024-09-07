@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { createSale, type SaleEntity } from "~/api";
 
-function newSale(sale: SaleEntity) {
-  return createSale({
+async function newSale(sale: SaleEntity) {
+  return await createSale({
     body: {
       userId: sale.userId,
       type: sale.type,
@@ -13,5 +13,6 @@ function newSale(sale: SaleEntity) {
 }
 </script>
 <template>
+
   <div></div>
 </template>

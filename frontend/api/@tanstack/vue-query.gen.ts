@@ -2,8 +2,8 @@
 
 import type { Options } from '@hey-api/client-axios';
 import { queryOptions, type UseMutationOptions } from '@tanstack/vue-query';
-import { client, getHello, createSale, getUser, getSales, login, createUser } from '../services.gen';
-import type { CreateSaleData, CreateSaleError, CreateSaleResponse, GetUserData, LoginData, LoginError, LoginResponse, CreateUserData, CreateUserError, CreateUserResponse } from '../types.gen';
+import { client, getHello, createSale, getUser, getUserSales, login, createUser } from '../services.gen';
+import type { CreateSaleData, CreateSaleError, CreateSaleResponse, GetUserData, GetUserSalesData, LoginData, LoginError, LoginResponse, CreateUserData, CreateUserError, CreateUserResponse } from '../types.gen';
 import type { AxiosError } from 'axios';
 
 type QueryKey<TOptions extends Options> = [
@@ -91,20 +91,20 @@ export const getUserOptions = (options: Options<GetUserData>) => { return queryO
     queryKey: getUserQueryKey(options)
 }); };
 
-export const getSalesQueryKey = (options?: Options) => [
-    createQueryKey("getSales", options)
+export const getUserSalesQueryKey = (options: Options<GetUserSalesData>) => [
+    createQueryKey("getUserSales", options)
 ];
 
-export const getSalesOptions = (options?: Options) => { return queryOptions({
+export const getUserSalesOptions = (options: Options<GetUserSalesData>) => { return queryOptions({
     queryFn: async ({ queryKey }) => {
-        const { data } = await getSales({
+        const { data } = await getUserSales({
             ...options,
             ...queryKey[0],
             throwOnError: true
         });
         return data;
     },
-    queryKey: getSalesQueryKey(options)
+    queryKey: getUserSalesQueryKey(options)
 }); };
 
 export const loginQueryKey = (options: Options<LoginData>) => [

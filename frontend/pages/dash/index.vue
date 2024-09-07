@@ -1,12 +1,5 @@
 <script lang="ts" setup>
-import { useQuery } from "@tanstack/vue-query";
-import { createUser } from "~/api";
-
 const tabList = ["Account", "Sales", "Purchases", "Reputation"];
-
-/*const { data: user } = useQuery(
-  computed(() => createUser(body: ""))
-);*/
 </script>
 <template>
   <div class="h-screen mx-24 my-12">

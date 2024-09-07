@@ -16,7 +16,7 @@ export class Sale {
 
   @IsEnum(SaleType)
   @ApiProperty({ enum: SaleType, enumName: 'SaleType' })
-  type: SaleType;
+  itemType: SaleType;
 
   @IsString()
   @IsMongoId()
@@ -31,8 +31,8 @@ export class Sale {
   static fromEntity(input: WithId<SaleEntity>) {
     const output: Sale = {
       id: input._id.toHexString(),
-      type: input.type,
-      buyer: input.buyer.userId.toHexString(),
+      itemType: input.type,
+      buyer: input.buyer.toHexString(),
       date: input.date,
       price: input.price,
     };

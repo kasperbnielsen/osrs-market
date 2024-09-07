@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectCollection } from 'src/mongodb/inject-collection.decorator';
-import { SaleEntity, SaleEntityBuyer } from './entities/sale.entity';
+import { SaleEntity } from './entities/sale.entity';
 import { Collection, ObjectId } from 'mongodb';
 import { SaleType } from './dto/sales.output';
 
@@ -11,20 +11,19 @@ export class SaleService {
     private readonly saleCollection: Collection<SaleEntity>,
   ) {}
 
-  async createSale(
-    userId: ObjectId,
-    type: SaleType,
-    buyer: SaleEntityBuyer,
-    price: number,
-  ) {
+  async createSale(type: SaleType, buyer: ObjectId, price: number) {
     const date = new Date();
 
-    return await this.saleCollection.insertOne({
-      userId,
+    console.log(buyer);
+
+    const x: Required<SaleEntity> = {
+      userId: ObjectId.createFromHexString('66d8688aeb43a1506c21d98c'),
       type,
       buyer,
       date,
       price,
-    });
+    };
+
+    return await this.saleCollection.insertOne(x);
   }
 }
