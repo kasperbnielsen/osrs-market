@@ -30,11 +30,14 @@ export const $User = {
         name: {
             type: 'string'
         },
+        email: {
+            type: 'string'
+        },
         hash: {
             type: 'string'
         }
     },
-    required: ['_id', 'name', 'hash']
+    required: ['_id', 'name', 'email', 'hash']
 } as const;
 
 export const $Sale = {
@@ -60,15 +63,34 @@ export const $Sale = {
     required: ['itemType', 'id', 'buyer', 'date', 'price']
 } as const;
 
-export const $AuthInput = {
+export const $LoginInput = {
     type: 'object',
     properties: {
-        username: {
+        email: {
             type: 'string'
         },
         password: {
             type: 'string'
         }
     },
-    required: ['username', 'password']
+    required: ['email', 'password']
+} as const;
+
+export const $RegisterInput = {
+    type: 'object',
+    properties: {
+        username: {
+            type: 'string',
+            minLength: 2,
+            maxLength: 50
+        },
+        email: {
+            type: 'string'
+        },
+        password: {
+            type: 'string',
+            minLength: 7
+        }
+    },
+    required: ['username', 'email', 'password']
 } as const;

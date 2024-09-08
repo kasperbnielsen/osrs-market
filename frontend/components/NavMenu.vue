@@ -21,7 +21,7 @@ const { username } = storeToRefs(useUserStore());
 
 const formSchema = toTypedSchema(
   z.object({
-    username: z.string().email({ message: "Ugyldig email addresse" }),
+    email: z.string().email({ message: "Ugyldig email addresse" }),
     password: z
       .string()
       .min(7, { message: "Adgangskode skal være på mindst 7 karakterer" }),
@@ -36,13 +36,13 @@ const formSchema2 = toTypedSchema(
   })
 );
 
-function createNewUser(username: string, password: string) {
-  return createUser({ body: { username, password } });
+function createNewUser(username: string, email: string, password: string) {
+  return createUser({ body: { username, email, password } });
 }
 
 async function onSignUp(values: GenericObject) {
   if (values.password == values.rePassword) {
-    await createNewUser(values.username, values.password);
+    await createNewUser(values.username, values.email, values.password);
     isSignUp.value = false;
   } else {
     toast({
@@ -57,9 +57,9 @@ async function onSubmit(values: GenericObject) {
   console.log("Form submitted!", values);
   try {
     await login({
-      body: { username: values.username, password: values.password },
+      body: { email: values.email, password: values.password },
     });
-    username.value = values.username;
+    username.value = values.email;
     isOpen.value = false;
   } catch {
     toast({
@@ -96,7 +96,7 @@ async function onSubmit(values: GenericObject) {
             <DialogDescription>
               <Form :validation-schema="formSchema" @submit="onSubmit">
                 <div class="flex flex-col gap-8">
-                  <FormField v-slot="{ componentField }" name="username">
+                  <FormField v-slot="{ componentField }" name="email">
                     <FormItem>
                       <FormLabel>Email</FormLabel>
                       <FormControl>

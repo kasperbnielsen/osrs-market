@@ -1,4 +1,4 @@
-import { IsMongoId, IsString } from 'class-validator';
+import { IsEmail, IsMongoId, IsString } from 'class-validator';
 import { UserEntity } from '../entities/user.entity';
 import { WithId } from 'mongodb';
 
@@ -10,6 +10,9 @@ export class User {
   @IsString()
   name: string;
 
+  @IsEmail()
+  email: string;
+
   @IsString()
   hash: string;
 
@@ -18,6 +21,7 @@ export class User {
       _id: input._id.toHexString(),
       name: input.username,
       hash: input.hash,
+      email: input.email,
     };
 
     return output;

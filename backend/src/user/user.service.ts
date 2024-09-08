@@ -13,8 +13,8 @@ export class UserService {
     private readonly saleCollection: Collection<SaleEntity>,
   ) {}
 
-  async getUser(username: string) {
-    return await this.userCollection.findOne({ username });
+  async getUser(email: string) {
+    return await this.userCollection.findOne({ email });
   }
 
   async getSalesByUserId(userId: ObjectId) {

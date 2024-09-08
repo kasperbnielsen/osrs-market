@@ -26,4 +26,3 @@ export class UserController {
     return sales.map(Sale.fromEntity);
   }
 }
-//
