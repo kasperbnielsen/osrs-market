@@ -32,5 +32,5 @@ export const login = <ThrowOnError extends boolean = false>(options: Options<Log
 
 export const createUser = <ThrowOnError extends boolean = false>(options: Options<CreateUserData, ThrowOnError>) => { return (options?.client ?? client).post<CreateUserResponse, CreateUserError, ThrowOnError>({
     ...options,
-    url: '/auth/newUser'
+    url: '/auth/register'
 }); };

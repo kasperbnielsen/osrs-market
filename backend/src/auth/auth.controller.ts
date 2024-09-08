@@ -1,7 +1,8 @@
 import { Body, Controller, ImATeapotException, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { AuthInput } from './dto/auth.input';
+import { RegisterInput } from './dto/register.input';
+import { LoginInput } from './dto/login.input';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -9,17 +10,21 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('')
-  async login(@Body() user: AuthInput) {
+  async login(@Body() user: LoginInput) {
     const authUser = await this.authService.authenticateUser(
-      user.username,
+      user.email,
       user.password,
     );
     return { hash: '', ...authUser };
   }
 
-  @Post('newUser')
-  createUser(@Body() user: AuthInput) {
-    const newUser = this.authService.createUser(user.username, user.password);
+  @Post('register')
+  createUser(@Body() user: RegisterInput) {
+    const newUser = this.authService.createUser(
+      user.username,
+      user.email,
+      user.password,
+    );
 
     if (!newUser) throw new ImATeapotException();
 

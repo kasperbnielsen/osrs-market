@@ -15,6 +15,7 @@ export type CreateSaleInput = {
 export type User = {
     _id: string;
     name: string;
+    email: string;
     hash: string;
 };
 
@@ -26,8 +27,14 @@ export type Sale = {
     price: number;
 };
 
-export type AuthInput = {
+export type LoginInput = {
+    email: string;
+    password: string;
+};
+
+export type RegisterInput = {
     username: string;
+    email: string;
     password: string;
 };
 
@@ -64,7 +71,7 @@ export type GetUserSalesResponse = (Array<Sale>);
 export type GetUserSalesError = unknown;
 
 export type LoginData = {
-    body: AuthInput;
+    body: LoginInput;
 };
 
 export type LoginResponse = (unknown);
@@ -72,7 +79,7 @@ export type LoginResponse = (unknown);
 export type LoginError = unknown;
 
 export type CreateUserData = {
-    body: AuthInput;
+    body: RegisterInput;
 };
 
 export type CreateUserResponse = (unknown);

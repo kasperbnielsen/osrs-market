@@ -1,4 +1,6 @@
 import {
+  HttpException,
+  HttpStatus,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -17,11 +19,10 @@ export class AuthService {
     private readonly userService: UserService,
   ) {}
 
-  async authenticateUser(username: string, password: string) {
-    const user = await this.userService.getUser(username);
+  async authenticateUser(email: string, password: string) {
+    const user = await this.userService.getUser(email);
 
     if (!user) throw new NotFoundException();
-    console.log(user);
 
     if (!bcrypt.compareSync(password, user.hash))
       throw new UnauthorizedException();
@@ -29,10 +30,33 @@ export class AuthService {
     return user;
   }
 
-  async createUser(username: string, password: string) {
+  async createUser(username: string, email: string, password: string) {
+    const newUsername = username.trim().toLowerCase();
+    const newEmail = email.trim().toLowerCase();
+
+    const usernameExists = await this.userCollection.findOne({
+      username: newUsername,
+    });
+
+    if (usernameExists)
+      throw new HttpException('Username already in use', HttpStatus.CONFLICT);
+
+    const emailExists = await this.userCollection.findOne({ email: newEmail });
+
+    if (emailExists)
+      throw new HttpException('Email already in use', HttpStatus.CONFLICT);
+
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(password, salt);
 
-    return this.userCollection.insertOne({ username, hash });
+    const date = new Date();
+
+    return this.userCollection.insertOne({
+      username: newUsername,
+      email: newEmail,
+      hash,
+      created_at: date,
+      modified_at: date,
+    });
   }
 }
